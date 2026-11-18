@@ -1,30 +1,116 @@
-# Campus Stores
 
-Campus Stores is a Product Engineer work sample set at a fictional campus media equipment desk. Work through a club’s screening, from equipment pickup to a partial return and the next morning’s handover. Open **Candidate brief** in the app for the assignment.
+# Campus Stores — Product Engineering Work Sample
 
-## Run the app
+Campus Stores is a fictional campus media-equipment desk. This work sample focuses on issuing physical equipment, recording partial returns, and handing outstanding items over to the next shift.
 
-Open `index.html` in a modern browser. The app includes its scripts, styles, and icons and can run offline.
+## Run locally
 
-To serve it over local HTTP, run this from the repository folder and visit `http://localhost:8000`.
+Open `index.html` in a modern browser, or serve the repository over local HTTP:
 
 ```sh
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-Each browser stores its own sample shift locally when browser storage is available. **Restart sample shift** restores the fictional starting records.
+Then visit:
 
-## Source
+http://localhost:8000
 
-- `index.html` contains the desk layout, candidate brief, and bundled icons.
-- `app.js` contains the sample records and interactions.
-- `styles.css` defines the desktop and mobile layouts.
+The application uses plain HTML, CSS, and JavaScript. Sample shift state is stored in the browser's localStorage.
 
-Icon license notices are in [third-party/lucide-LICENSE.txt](third-party/lucide-LICENSE.txt).
+Select **Restart sample shift** to restore the fictional starting records.
 
+## Product decision
 
-## Submit your work
+### What the existing product handles well
 
-1. [Fork Campus Stores](https://github.com/virinchi-healthcare/campus-stores/fork) into your GitHub account. Complete the candidate brief and push your changes to your public fork. In your README, point reviewers to your work and explain the decision you made.
-2. In your fork, open **Commits**, select the final commit you want reviewed, and copy the page URL. It should look like `https://github.com/YOUR-USERNAME/campus-stores/commit/COMMIT-SHA`.
-3. [Submit your work through the Google Form](https://docs.google.com/forms/d/e/1FAIpQLScvzoh1R4WS-SkiwAVBQbMvniieJYSoOEfLMyVo5CyjOvYUgQ/viewform). Your **roll number**, **email ID**, and **final commit link from your public fork** are required. Enter your roll number and email ID in the form only.
+The loan register creates one issue slip per physical equipment unit.
+
+This is useful when a request contains multiple items because each unit can be returned independently and its availability can be tracked separately.
+
+### What I changed
+
+I added an automatic **Outstanding at handover** summary to the Desk book once the shift moves to the return-time stage.
+
+The summary:
+
+- Lists every loan that is still open.
+- Identifies the physical asset and request.
+- Preserves the original borrower.
+- Shows the current custodian separately when equipment has been handed to another person.
+- Shows the due time and expected return time.
+- Allows the next shift to record a return directly from the summary.
+
+For the Film Society scenario, the projector and speaker can be returned independently while the adapter remains outstanding.
+
+The handover records Leela Das as the adapter's current custodian without overwriting Kabir Sen as the original borrower.
+
+The morning shift can identify AD-12 and close the correct loan.
+
+### Why this change
+
+The original desk book contains a free-text message about the adapter being with Leela, while the loan register contains the asset-level record.
+
+Staff must reconcile those two places manually.
+
+The summary brings the outstanding loan and its handover context together at the point where the next shift needs it.
+
+### What I kept
+
+I kept the existing:
+
+- Request management workflow.
+- Physical inventory tracking.
+- Individual equipment issue slips.
+- Return recording process.
+- Equipment availability validation.
+- Browser-based persistence.
+
+The one-slip-per-physical-unit model remains unchanged.
+
+### How I would evaluate the change
+
+At a real equipment counter, I would observe the next-shift employee taking over a partially returned request.
+
+I would measure the time from opening the handover record to correctly identifying the outstanding asset and recording its return.
+
+I would also note whether the employee needs to ask the previous shift for clarification or opens the wrong loan.
+
+A successful outcome would be:
+
+- Shorter handover time.
+- Fewer clarification questions.
+- No incorrect loan closures.
+
+## Engineering considerations
+
+The implementation maintains separate information for:
+
+- Original borrower.
+- Current equipment custodian.
+- Physical asset ID.
+- Approved request ID.
+- Due time.
+- Return status.
+
+This helps maintain traceability when equipment changes hands before it is returned.
+
+## Source files
+
+- `index.html` — page structure, candidate brief, and bundled icons.
+- `app.js` — sample records, interactions, validation, persistence, and handover summary.
+- `styles.css` — responsive layout and visual styling.
+
+Icon license notices are in `third-party/lucide-LICENSE.txt`.
+
+## Submission
+
+Push the finished work to your public GitHub fork.
+
+In GitHub:
+
+1. Open **Commits**.
+2. Select the final commit.
+3. Copy the commit page URL.
+4. Submit that exact URL through the supplied Google Form.
+
+The submission requires your roll number, email ID, and final commit link from your public GitHub fork.
